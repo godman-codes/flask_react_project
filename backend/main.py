@@ -5,10 +5,8 @@ from config import DevConfig
 
 
 app = Flask(__name__)
-
 app.config.from_object(DevConfig)
-
-api=Api(app, doc='/docs')
+api=Api(app,doc='/docs')
 
 @api.route('/hello')
 class HelloResource(Resource):

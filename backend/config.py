@@ -1,4 +1,3 @@
-from distutils.debug import DEBUG
 from decouple import config
 import os
 
@@ -9,13 +8,13 @@ class Config:
    SQLALCHEMY_TRACK_MODIFICATION=config('SQLALCHEMY_TRACK_MODIFICATIONS', cast=bool)
 
 
-class DevConfig(config):
+class DevConfig(Config):
    SQLALCHEMY_DATABASE_URI="sqlite:///"+os.path.join(BASE_DIR,'dev.db')
    DEBUG=True
    SQLALCHEMY_ECHO=True
 
-class ProdConfig(config):
+class ProdConfig(Config):
    pass
 
-class TestConfig(config):
+class TestConfig(Config):
    pass
