@@ -5,6 +5,7 @@ from models import Recipe, User
 from exts import db
 from flask_migrate import Migrate
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_jwt_extended import JWTManager, create_access_token, create_refresh_token
 
 
 
@@ -16,6 +17,9 @@ db.init_app(app)
 
 #initiate migrate on the database and application
 migrate = Migrate(app, db)
+
+#initiate flask jwt
+JWTManager(app)
 
 api=Api(app,doc='/docs')
 
@@ -38,6 +42,14 @@ signup_model=api.model(
    }
 )
 
+login_model=api.model(
+   'Login',
+   {
+      'username': fields.String(),
+      'password': fields.String()
+   }
+)
+
 @api.route('/hello')
 class HelloResource(Resource):
    def get(self):
@@ -46,14 +58,14 @@ class HelloResource(Resource):
 
 @api.route('/signup')
 class Signup(Resource):
-
+   
    @api.expect(signup_model)
    def post(self):
       data = request.get_json()
 
       username = data.get('username')
 
-      db_user=User.query.filter(username=username).first()
+      db_user=User.query.filter_by(username=username).first()
 
       if db_user is not None:
          return jsonify({'message': f'User with username {username} already exists'})
@@ -64,16 +76,39 @@ class Signup(Resource):
          password=generate_password_hash(data.get('password'))
       )
 
-      new_user.save()     
+      new_user.save()
+
+      return jsonify({'message': 'new user created successfully'})
 
 @api.route('/login')
 class Login(Resource):
+   
+   @api.expect(login_model)
    def post(self):
-      pass
+      data = request.get_json()
+
+      username = data.get('username')
+      password = data.get('password')
+
+      db_user = User.query.filter_by(username=username).first()
+      
+      if db_user and check_password_hash(db_user.password, password):
+         
+         access_token = create_access_token(identity=db_user.username)
+         refresh_token = create_refresh_token(identity=db_user.username)
+
+         return jsonify({
+            'message': 'login successfully',
+            'access_token': access_token,
+            'refresh_token': refresh_token
+         })
+
+      return jsonify({'message': 'invalid credentials'})
 
 
 @api.route('/recipes')
 class RecipesResource(Resource):
+   
    @api.marshal_list_with(recipe_model)
    def get(self):
       '''
