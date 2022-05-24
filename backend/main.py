@@ -11,6 +11,7 @@ db.init_app(app)
 
 api=Api(app,doc='/docs')
 
+'''model serializer'''
 recipe_model=api.model(
    'Recipe',
    {
