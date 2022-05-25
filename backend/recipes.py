@@ -17,11 +17,17 @@ recipe_model=recipe_ns.model(
    }
 )
 
+@recipe_ns.route('/hello')
+class HelloResource(Resource):
+   def get(self):
+      return {'message':'hello world'}
+   
+
 @recipe_ns.route('/recipes')
 class RecipesResource(Resource):
    
    @recipe_ns.marshal_list_with(recipe_model)
-   @jwt_required()
+   # @jwt_required()
    def get(self):
       '''
       Get all recipes
@@ -34,7 +40,7 @@ class RecipesResource(Resource):
    @jwt_required()
    def post(self):
       '''
-      create a new recipes
+      create a new recipe
       ''' 
 
       data = request.get_json()
@@ -53,7 +59,7 @@ class RecipesResource(Resource):
 class RecipeResource(Resource):
 
    @recipe_ns.marshal_with(recipe_model)
-   @jwt_required()
+   # @jwt_required()
    def get(self, id):
       '''
       Get a recipe by id
