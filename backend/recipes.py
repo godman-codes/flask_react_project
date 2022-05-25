@@ -1,5 +1,5 @@
 from flask_restx import Namespace, Resource, fields
-from flask import request
+from flask import request, jsonify, make_response
 from models import Recipe
 from flask_jwt_extended import jwt_required
 
@@ -20,7 +20,7 @@ recipe_model=recipe_ns.model(
 @recipe_ns.route('/hello')
 class HelloResource(Resource):
    def get(self):
-      return {'message':'hello world'}
+      return jsonify({'message': 'hello world'})
    
 
 @recipe_ns.route('/recipes')
