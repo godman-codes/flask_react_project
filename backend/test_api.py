@@ -210,7 +210,7 @@ class APITestCase(unittest.TestCase):
 
       status_code = delete_response.status_code
 
-      print(delete_response.json)
+      # print(delete_response.json)
 
       self.assertEqual(status_code, 200)
 
