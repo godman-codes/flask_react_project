@@ -1,8 +1,8 @@
 from flask_restx import Resource, Namespace, fields
-from flask import jsonify, request
+from flask import jsonify, request, make_response
 from models import User
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_jwt_extended import JWTManager, create_access_token, create_refresh_token
+from flask_jwt_extended import create_access_token, create_refresh_token
 
 #initiate name space it works like blueprint 
 auth_ns=Namespace('auth', description="A namespace for our authentication")
@@ -48,7 +48,7 @@ class Signup(Resource):
 
       new_user.save()
 
-      return jsonify({'message': 'new user created successfully'})
+      return make_response(jsonify({'message': 'new user created successfully'}), 201)
 
 
 
@@ -69,11 +69,11 @@ class Login(Resource):
          access_token = create_access_token(identity=db_user.username)
          refresh_token = create_refresh_token(identity=db_user.username)
 
-         return jsonify({
+         return make_response(jsonify({
             'message': 'login successfully',
             'access_token': access_token,
             'refresh_token': refresh_token
-         })
+         }), 200)
 
       return jsonify({'message': 'invalid credentials'})
 
