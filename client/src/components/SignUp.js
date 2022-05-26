@@ -9,6 +9,11 @@ const SignUp = () => {
 
    const submitForm = () => {
       console.log("form Submitted");
+      console.log(username, email, password, confirmPassword);
+      setUsername("");
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
    };
    const handleInput = (e) => {
       const name = e.currentTarget.name;
