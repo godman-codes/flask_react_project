@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Form, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -30,10 +30,10 @@ const Login = () => {
                      {...register("username", { required: true })}
                   />
                   {errors.username?.type === "required" && (
-                     <span style={{ color: "red" }}>Username is required</span>
+                     <small className="form-error">Username is required</small>
                   )}
                </Form.Group>
-               <br />
+               {errors.username ? "" : <br />}
                <Form.Group>
                   <Form.Label>Password</Form.Label>
                   <Form.Control
@@ -42,10 +42,10 @@ const Login = () => {
                      {...register("password", { required: true })}
                   />
                   {errors.password?.type === "required" && (
-                     <span style={{ color: "red" }}>Password is required</span>
+                     <small className="form-error">Password is required</small>
                   )}
                </Form.Group>
-               <br />
+               {errors.password ? "" : <br />}
                <Form.Group>
                   <Button
                      as="sub"
