@@ -10,10 +10,26 @@ const SignUp = () => {
       handleSubmit,
       reset,
       formState: { errors },
+      getValues,
    } = useForm();
 
    const signupUser = (data) => {
       console.log(data);
+      function assign({ username, email, password }) {
+         const data = { username: username, email: email, password: password };
+         return data;
+      }
+
+      const requestOptions = {
+         methods: "POST",
+         headers: {
+            "content-type": "application/json",
+         },
+         body: JSON.stringify(assign(data)),
+      };
+
+      fetch("/auth/sigup", requestOptions);
+
       reset();
    };
    console.log(watch("username"));
@@ -29,21 +45,22 @@ const SignUp = () => {
                      type="text"
                      placeholder="Your Username"
                      {...register("username", {
-                        required: true,
+                        required: "username is required",
                         maxLength: 25,
                      })}
                   />
                   {errors.username?.type === "required" && (
-                     <span style={{ color: "red" }}>Username is required</span>
+                     <small className="form-error">
+                        {errors.username.message}
+                     </small>
                   )}
-                  {errors.username?.type === "required" && <br />}
                   {errors.username?.type === "maxLength" && (
-                     <span style={{ color: "red" }}>
+                     <small className="form-error">
                         Max characters should be 25
-                     </span>
+                     </small>
                   )}
                </Form.Group>
-               <br />
+               {errors.username ? "" : <br />}
                <Form.Group>
                   <Form.Label>Email</Form.Label>
                   <Form.Control
@@ -52,48 +69,62 @@ const SignUp = () => {
                      {...register("email", { required: true, maxLength: 80 })}
                   />
                   {errors.email?.type === "required" && (
-                     <span style={{ color: "red" }}>email is required</span>
+                     <small className="form-error">email is required</small>
                   )}
-                  {errors.email?.type === "required" && <br />}
                   {errors.email?.type === "maxLength" && (
-                     <span style={{ color: "red" }}>
+                     <small className="form-error">
                         Max characters should be 80
-                     </span>
+                     </small>
                   )}
                </Form.Group>
-               <br />
+               {errors.email ? "" : <br />}
                <Form.Group>
                   <Form.Label>Password</Form.Label>
                   <Form.Control
                      type="password"
                      placeholder="Your Password"
-                     {...register("password", { required: true, minLength: 8 })}
+                     {...register("password", {
+                        required: true,
+                        minLength: 5,
+                     })}
                   />
                   {errors.password?.type === "required" && (
-                     <span style={{ color: "red" }}>Password is required</span>
+                     <small className="form-error">Password is required</small>
                   )}
-                  {errors.password?.type === "required" && <br />}
                   {errors.password?.type === "minLength" && (
-                     <span style={{ color: "red" }}>Password too short</span>
+                     <small className="form-error">Password too short</small>
+                  )}
+                  {errors.password?.type === "pattern" && (
+                     <small className="form-error">
+                        Password must be alphanumeric
+                     </small>
                   )}
                </Form.Group>
-               <br />
+               {errors.password ? "" : <br />}
                <Form.Group>
                   <Form.Label>Confirm Password</Form.Label>
                   <Form.Control
                      type="password"
                      placeholder="Confirm Password"
                      {...register("confirmPassword", {
-                        required: true,
-                        minLength: 8,
+                        required: "Enter password again to confirm",
+                        validate: {
+                           matchesPreviousPasswords: (value) => {
+                              const { password } = getValues();
+                              return (
+                                 password === value || "Passwords should match!"
+                              );
+                           },
+                        },
                      })}
                   />
-                  {errors.confirmPassword?.type === "required" && (
-                     <span style={{ color: "red" }}>
-                        Confirm Password is required
-                     </span>
+                  {errors.confirmPassword && (
+                     <small className="form-error">
+                        {errors.confirmPassword.message}
+                     </small>
                   )}
                </Form.Group>
+               {errors.confirmPassword ? "" : <br />}
                <br />
                <Form.Group>
                   <Button
