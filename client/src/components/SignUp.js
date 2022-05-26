@@ -1,30 +1,22 @@
-import React, { useState } from "react";
+import React from "react";
 import { Form, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
 
 const SignUp = () => {
-   const [username, setUsername] = useState("");
-   const [email, setEmail] = useState("");
-   const [password, setPassword] = useState("");
-   const [confirmPassword, setConfirmPassword] = useState("");
+   const {
+      register,
+      watch,
+      handleSubmit,
+      reset,
+      formState: { errors },
+   } = useForm();
 
-   const signupUser = () => {
-      console.log("form Submitted");
-      console.log(username, email, password, confirmPassword);
-      setUsername("");
-      setEmail("");
-      setPassword("");
-      setConfirmPassword("");
+   const signupUser = (data) => {
+      console.log(data);
+      reset();
    };
-   const handleInput = (e) => {
-      const name = e.currentTarget.name;
-      const value = e.currentTarget.value;
-
-      if (name === "username") setUsername(value);
-      if (name === "email") setEmail(value);
-      if (name === "password") setPassword(value);
-      if (name === "confirmPassword") setConfirmPassword(value);
-   };
+   console.log(watch("username"));
 
    return (
       <div className="container">
@@ -36,10 +28,20 @@ const SignUp = () => {
                   <Form.Control
                      type="text"
                      placeholder="Your Username"
-                     value={username}
-                     onChange={handleInput}
-                     name="username"
+                     {...register("username", {
+                        required: true,
+                        maxLength: 25,
+                     })}
                   />
+                  {errors.username?.type === "required" && (
+                     <span style={{ color: "red" }}>Username is required</span>
+                  )}
+                  {errors.username?.type === "required" && <br />}
+                  {errors.username?.type === "maxLength" && (
+                     <span style={{ color: "red" }}>
+                        Max characters should be 25
+                     </span>
+                  )}
                </Form.Group>
                <br />
                <Form.Group>
@@ -47,10 +49,17 @@ const SignUp = () => {
                   <Form.Control
                      type="email"
                      placeholder="Your Email"
-                     value={email}
-                     onChange={handleInput}
-                     name="email"
+                     {...register("email", { required: true, maxLength: 80 })}
                   />
+                  {errors.email?.type === "required" && (
+                     <span style={{ color: "red" }}>email is required</span>
+                  )}
+                  {errors.email?.type === "required" && <br />}
+                  {errors.email?.type === "maxLength" && (
+                     <span style={{ color: "red" }}>
+                        Max characters should be 80
+                     </span>
+                  )}
                </Form.Group>
                <br />
                <Form.Group>
@@ -58,10 +67,15 @@ const SignUp = () => {
                   <Form.Control
                      type="password"
                      placeholder="Your Password"
-                     value={password}
-                     onChange={handleInput}
-                     name="password"
+                     {...register("password", { required: true, minLength: 8 })}
                   />
+                  {errors.password?.type === "required" && (
+                     <span style={{ color: "red" }}>Password is required</span>
+                  )}
+                  {errors.password?.type === "required" && <br />}
+                  {errors.password?.type === "minLength" && (
+                     <span style={{ color: "red" }}>Password too short</span>
+                  )}
                </Form.Group>
                <br />
                <Form.Group>
@@ -69,14 +83,24 @@ const SignUp = () => {
                   <Form.Control
                      type="password"
                      placeholder="Confirm Password"
-                     value={confirmPassword}
-                     onChange={handleInput}
-                     name="confirmPassword"
+                     {...register("confirmPassword", {
+                        required: true,
+                        minLength: 8,
+                     })}
                   />
+                  {errors.confirmPassword?.type === "required" && (
+                     <span style={{ color: "red" }}>
+                        Confirm Password is required
+                     </span>
+                  )}
                </Form.Group>
                <br />
                <Form.Group>
-                  <Button as="sub" variant="primary" onClick={signupUser}>
+                  <Button
+                     as="sub"
+                     variant="primary"
+                     onClick={handleSubmit(signupUser)}
+                  >
                      Sign Up
                   </Button>
                </Form.Group>

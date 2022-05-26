@@ -1,24 +1,22 @@
 import React, { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
 
 const Login = () => {
-   const [username, setUsername] = useState("");
-   const [password, setPassword] = useState("");
+   const {
+      register,
+      watch,
+      handleSubmit,
+      reset,
+      formState: { errors },
+   } = useForm();
 
-   const loginUser = () => {
-      console.log("form Submitted");
-      console.log(username, password);
-      setUsername("");
-      setPassword("");
+   const loginUser = (data) => {
+      console.log(data);
+      reset();
    };
-   const handleInput = (e) => {
-      const name = e.currentTarget.name;
-      const value = e.currentTarget.value;
 
-      if (name === "username") setUsername(value);
-      if (name === "password") setPassword(value);
-   };
    return (
       <div className="container">
          <div className="form">
@@ -29,10 +27,11 @@ const Login = () => {
                   <Form.Control
                      type="text"
                      placeholder="Your Username"
-                     value={username}
-                     onChange={handleInput}
-                     name="username"
+                     {...register("username", { required: true })}
                   />
+                  {errors.username?.type === "required" && (
+                     <span style={{ color: "red" }}>Username is required</span>
+                  )}
                </Form.Group>
                <br />
                <Form.Group>
@@ -40,14 +39,19 @@ const Login = () => {
                   <Form.Control
                      type="password"
                      placeholder="Your Password"
-                     value={password}
-                     onChange={handleInput}
-                     name="password"
+                     {...register("password", { required: true })}
                   />
+                  {errors.password?.type === "required" && (
+                     <span style={{ color: "red" }}>Password is required</span>
+                  )}
                </Form.Group>
                <br />
                <Form.Group>
-                  <Button as="sub" variant="primary" onClick={loginUser}>
+                  <Button
+                     as="sub"
+                     variant="primary"
+                     onClick={handleSubmit(loginUser)}
+                  >
                      Sign Up
                   </Button>
                </Form.Group>
