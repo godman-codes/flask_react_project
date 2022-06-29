@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import { Form, Button, Alert } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
+// import { login } from "../auth";
+// import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
    const {
       register,
-      watch,
+      // watch,
       handleSubmit,
       reset,
       formState: { errors },

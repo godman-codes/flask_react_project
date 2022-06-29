@@ -2,18 +2,43 @@ import React from "react";
 import { Form, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { login } from "../auth";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
    const {
       register,
-      watch,
+      // watch,
       handleSubmit,
       reset,
       formState: { errors },
    } = useForm();
+   const navigate = useNavigate();
 
    const loginUser = (data) => {
       console.log(data);
+      function assign({ username, password }) {
+         const data = { username: username, password: password };
+         return data;
+      }
+
+      const requestOptions = {
+         method: "POST",
+         headers: {
+            "content-type": "application/json",
+         },
+         body: JSON.stringify(assign(data)),
+      };
+
+      fetch("/auth/login", requestOptions)
+         .then((res) => res.json())
+         .then((data) => {
+            console.log(data.access_token);
+            login(data.access_token);
+            navigate("/");
+         })
+         .catch((err) => console.log(err));
+
       reset();
    };
 
@@ -27,10 +52,20 @@ const Login = () => {
                   <Form.Control
                      type="text"
                      placeholder="Your Username"
-                     {...register("username", { required: true })}
+                     {...register("username", {
+                        required: "username is required",
+                        maxLength: 25,
+                     })}
                   />
                   {errors.username?.type === "required" && (
-                     <small className="form-error">Username is required</small>
+                     <small className="form-error">
+                        {errors.username.message}
+                     </small>
+                  )}
+                  {errors.username?.type === "maxLength" && (
+                     <small className="form-error">
+                        Max characters should be 25
+                     </small>
                   )}
                </Form.Group>
                {errors.username ? "" : <br />}
@@ -39,10 +74,14 @@ const Login = () => {
                   <Form.Control
                      type="password"
                      placeholder="Your Password"
-                     {...register("password", { required: true })}
+                     {...register("password", {
+                        required: "Password is required",
+                     })}
                   />
                   {errors.password?.type === "required" && (
-                     <small className="form-error">Password is required</small>
+                     <small className="form-error">
+                        {errors.password.message}
+                     </small>
                   )}
                </Form.Group>
                {errors.password ? "" : <br />}
@@ -52,7 +91,7 @@ const Login = () => {
                      variant="primary"
                      onClick={handleSubmit(loginUser)}
                   >
-                     Sign Up
+                     Login
                   </Button>
                </Form.Group>
                <br />
