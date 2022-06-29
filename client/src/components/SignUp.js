@@ -1,5 +1,5 @@
-import React from "react";
-import { Form, Button } from "react-bootstrap";
+import React, { useState } from "react";
+import { Form, Button, Alert } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
@@ -12,6 +12,8 @@ const SignUp = () => {
       formState: { errors },
       getValues,
    } = useForm();
+   const [show, setShow] = useState(false);
+   const [serverResponse, setServerResponse] = useState("");
 
    const signupUser = (data) => {
       console.log(data);
@@ -21,22 +23,37 @@ const SignUp = () => {
       }
 
       const requestOptions = {
-         methods: "POST",
+         method: "POST",
          headers: {
             "content-type": "application/json",
          },
          body: JSON.stringify(assign(data)),
       };
 
-      fetch("/auth/sigup", requestOptions);
+      fetch("/auth/signup", requestOptions)
+         .then((res) => res.json())
+         .then((data) => setServerResponse(data.message))
+         .catch((err) => console.log(err));
+
+      setShow(true);
 
       reset();
    };
-   console.log(watch("username"));
+   // console.log(watch("username"));
 
    return (
       <div className="container">
          <div className="form">
+            {!show || (
+               <Alert
+                  variant="success"
+                  onClose={() => setShow(false)}
+                  dismissible
+               >
+                  {/* <Alert.Heading>Oh snap! You got an error!</Alert.Heading> */}
+                  <p>{serverResponse}</p>
+               </Alert>
+            )}
             <h1>Sign Up Page</h1>
             <form>
                <Form.Group>
