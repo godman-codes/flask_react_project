@@ -69,11 +69,14 @@ const LoggedInHome = () => {
 
       fetch(`/recipe/recipe/${recipeId}`, requestOptions)
          .then((res) => res.json())
-         .then((data) => console.log(data))
+         .then((data) => {
+            console.log(data);
+            setShow(false);
+            reset();
+         })
          .catch((err) => console.log(err));
 
       reset();
-      setShow(false);
    };
 
    const deleteRecipe = () => {
@@ -87,10 +90,14 @@ const LoggedInHome = () => {
 
       fetch(`/recipe/recipe/${recipeId}`, requestOptions)
          .then((res) => res.json())
-         .then((data) => console.log(data))
+         .then((data) => {
+            console.log(data);
+
+            setShowDeleteModal(false);
+            // const reload = window.location.reload();
+            // reload();
+         })
          .catch((err) => console.log(err));
-      setShowDeleteModal(true);
-      setShowDeleteModal(false);
    };
 
    return (
