@@ -92,7 +92,7 @@ const LoggedInHome = () => {
          .then((res) => res.json())
          .then((data) => {
             console.log(data);
-
+            // console.log();
             setShowDeleteModal(false);
             // const reload = window.location.reload();
             // reload();
