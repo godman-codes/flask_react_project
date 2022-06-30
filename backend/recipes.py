@@ -59,7 +59,7 @@ class RecipesResource(Resource):
 class RecipeResource(Resource):
 
    @recipe_ns.marshal_with(recipe_model)
-   # @jwt_required()
+   @jwt_required()
    def get(self, id):
       '''
       Get a recipe by id
