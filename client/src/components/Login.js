@@ -1,11 +1,13 @@
-import React from "react";
-import { Form, Button } from "react-bootstrap";
+import React, { useState } from "react";
+import { Form, Button, Alert } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { login } from "../auth";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+   const [show, setShow] = useState(false);
+   const [serverResponse, setServerResponse] = useState("");
    const {
       register,
       // watch,
@@ -33,9 +35,14 @@ const Login = () => {
       fetch("/auth/login", requestOptions)
          .then((res) => res.json())
          .then((data) => {
-            console.log(data.access_token);
-            login(data.access_token);
-            navigate("/");
+            if (data.access_token) {
+               console.log(data.access_token);
+               login(data.access_token);
+               navigate("/");
+            } else {
+               setServerResponse(data.message);
+               setShow(true);
+            }
          })
          .catch((err) => console.log(err));
 
@@ -45,6 +52,17 @@ const Login = () => {
    return (
       <div className="container">
          <div className="form">
+            {!show || (
+               <Alert
+                  variant="danger"
+                  onClose={() => setShow(false)}
+                  dismissible
+                  className="alert-popUp"
+               >
+                  {/* <Alert.Heading>Oh snap! You got an error!</Alert.Heading> */}
+                  <p style={{ marginBottom: "0rem" }}>{serverResponse}</p>
+               </Alert>
+            )}
             <h1>Login Page</h1>
             <form>
                <Form.Group>
