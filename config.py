@@ -13,11 +13,10 @@ class DevConfig(Config):
    SQLALCHEMY_ECHO=True
 
 class ProdConfig(Config):
-   pass
-   # SQLALCHEMY_DATABASE_URI="sqlite:///dev.db"
-   # DEBUG=config('DEBUG',cast=bool)
-   # SQLALCHEMY_ECHO=config('ECHO',cast=bool)
-   # SQLALCHEMY_TRACK_MODIFICATIONS=config('SQLALCHEMY_TRACK_MODIFICATIONS',cast=bool)
+   SQLALCHEMY_DATABASE_URI="sqlite:///dev.db"
+   DEBUG=config('DEBUG')
+   SQLALCHEMY_ECHO=config('ECHO')
+   SQLALCHEMY_TRACK_MODIFICATIONS=config('SQLALCHEMY_TRACK_MODIFICATION')
 
 
 class TestConfig(Config):
